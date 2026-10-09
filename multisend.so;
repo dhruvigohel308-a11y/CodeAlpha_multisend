@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract MultiSend {
+
+    function multiSend(address payable[] memory recipients) public payable {
+        require(recipients.length > 0, "No recipients");
+
+        uint256 amount = msg.value / recipients.length;
+        require(amount > 0, "Insufficient Ether");
+
+        for (uint256 i = 0; i < recipients.length; i++) {
+            (bool success, ) = recipients[i].call{value: amount}("");
+            require(success, "Transfer failed");
+        }
+    }
+}
